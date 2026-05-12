@@ -16,10 +16,11 @@ function construct_block_array(frame::AbstractArray{T, 3}, block_size::Int = 16)
 
     frame_padded = padded(pad_x, pad_y, frame)
 
-    _, padded_y, padded_x = size(frame_padded)
+    _, padded_x, padded_y = size(frame_padded)
 
-    ny::Int = padded_y / block_size
-    nx::Int = padded_x / block_size
+    ny::Int = padded_x ÷ block_size
+    nx::Int = padded_y ÷ block_size
+
     blocks = [
               view(
                    frame_padded, 
@@ -32,7 +33,6 @@ function construct_block_array(frame::AbstractArray{T, 3}, block_size::Int = 16)
 
     return blocks
 end
-
 """
 Compare two blocks
 """
