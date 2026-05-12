@@ -12,53 +12,84 @@ white = channelview(load("data/white.png"))[1:3,:,:]
 complex_original = channelview(load("data/hourglass.png"))[1:3,:,:]
 complex_shifted = channelview(load("data/hourglass-shifted.png"))[1:3,:,:]
 
+c1 = channelview(load("data/circle1.png"))[1:3,:,:]
+c2 = channelview(load("data/circle2.png"))[1:3,:,:]
+
+
 complex_ba = construct_block_array(complex_shifted)
 black_ba = construct_block_array(black)
+c_ba = construct_block_array(c1)
 
 mv = exhaustive_search(complex_ba, complex_original, 16, 16)
-exhaustive_search(black_ba, black, 32, 16)
+bv = exhaustive_search(black_ba, black, 32, 16)
 
 #%% Plot V field
-using Plots
 
 
-function plot_vector_field(mv::Matrix{Tuple{Float64, Float64}})
+function plot_vector_field(
+    mv::Matrix{Tuple{T,T}},
+    block_size::Real = 16
+) where T
+
     rows, cols = size(mv)
-    
-    # Collect starting points and vector components
+
     x_starts = Float64[]
     y_starts = Float64[]
     u_components = Float64[]
     v_components = Float64[]
-    
+
+    magnitudes = Float64[]
+
     for i in 1:rows
         for j in 1:cols
+
             dx, dy = mv[i, j]
-            if dx != 0 || dy != 0  # Only plot non-zero vectors
-                push!(x_starts, j)   # j = column = x-axis
-                push!(y_starts, i)   # i = row = y-axis
+
+            if dx != 0 || dy != 0
+
+                x = (j - 0.5) * block_size
+                y = (rows - i + 0.5) * block_size  # image coords (y down)
+
+                push!(x_starts, x)
+                push!(y_starts, y)
+
                 push!(u_components, dx)
-                push!(v_components, dy)
+                push!(v_components, -dy)
+
+                push!(magnitudes, sqrt(dx^2 + dy^2))
             end
         end
     end
-    
-    quiver(x_starts, y_starts,
+
+    # Normalize magnitudes for visual scaling
+    maxmag = maximum(magnitudes)
+
+    linew = 0.5 .+ 3.0 .* (magnitudes ./ maxmag)
+    colors = cgrad(:viridis)[magnitudes ./ maxmag]
+
+    quiver(
+        x_starts,
+        y_starts,
+
         quiver = (u_components, v_components),
-        xlims = (0, cols + 1),
-        ylims = (0, rows + 1),
-        xlabel = "Column (j)",
-        ylabel = "Row (i)",
-        title = "Vector Field",
-        arrow = true,
-        linewidth = 0.5,
-        lengthscale =0.1,
-        arrowscale = 0.1,
-        color = :blue,
+
+        xlims = (0, cols * block_size),
+        ylims = (0, rows * block_size),
+
         aspect_ratio = :equal,
-        size = (800, 600)
+
+        xlabel = "x (pixels)",
+        ylabel = "y (pixels)",
+        title = "Motion Vector Field (Block Matching)",
+
+        linewidth = linew,
+        color = colors,
+
+        size = (900, 700)
     )
 end
 
-mv = mv.*0.1
-plot_vector_field(mv)
+
+
+cv =  exhaustive_search(c_ba, c2, 100, 16)
+plot_vector_field(cv)
