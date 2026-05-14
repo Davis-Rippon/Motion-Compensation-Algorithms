@@ -4,7 +4,7 @@ using StatsBase, ColorVectorSpace, Colors
 include("src/block_match.jl")
 using .BlockMatch
 
-#%% Helper for padding (Place this in your src/block_match.jl or here)
+#%% Helper for padding 
 function pad_to_block(img_array::AbstractArray{T,3}, block_size::Int) where T
     C, H, W = size(img_array)
     pad_h = (block_size - (H % block_size)) % block_size
