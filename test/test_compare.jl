@@ -112,7 +112,7 @@ ref = channelview(load("data/hourglass.png"))[1:3,:,:]
 target = channelview(load("data/hourglass-shifted.png"))[1:3,:,:]
 
 target_ba = construct_block_array(target)
-cv = logarithmic_search(c_ba, ref, 150, 16)
+cv = logarithmic_search(target_ba, ref, 150, 16)
 plot_vector_field(cv)
 
 x = reconstruct_image(cv, ref, 16)
