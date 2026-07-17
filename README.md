@@ -1,5 +1,5 @@
 # BlockMatch
-See my #[website article](https://davisrippon.com/notes/motion-compensation/motion-compensation/)
+See my [website article](https://davisrippon.com/notes/motion-compensation/motion-compensation/)
 
 Library for visualisation/benchmarking of block matching algorithms for motion compensation.
 ## TODOs

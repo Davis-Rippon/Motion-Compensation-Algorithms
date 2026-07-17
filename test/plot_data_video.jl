@@ -116,7 +116,7 @@ function plot_graph(filename, search_method=0)
     println("Graph successfully saved as: $save_filename")
     println("Method $search_method Compression Efficiency: $(round(efficiency*100, digits=2))%")
     
-    # Return the plot object in case you are running this in a REPL/Jupyter Notebook
+    # Return the plot object 
     return p 
 end
 
@@ -174,6 +174,6 @@ function plot_vals(filename, search_method=0)
     close(video)
 end
 
-@time plot_vals("data/videos/moving_square.mp4")
 
-@time plot_graph("data/videos/growing_blue_circle.mp4", 1)
+@time plot_vals("data/videos/moving_square.mp4")
+# @time plot_vals("data/videos/growing_blue_circle.mp4")
